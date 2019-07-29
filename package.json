@@ -1,0 +1,17 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "A Decentralized Chat App",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "Ethereum"
+  ],
+  "author": "Syahrul Nizam @ Chainstack",
+  "license": "MIT"
+}
