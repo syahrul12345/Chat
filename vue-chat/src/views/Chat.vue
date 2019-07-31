@@ -2,6 +2,7 @@
     <div class="chat container">
         <h2 class="text-primary text-center">Chainstack Super Secret Chat</h2>
         <h5 class="text-secondary text-center">Powered by Quorum</h5>
+
         <div class="card">
             <div class="card-body">
                 <p class="nomessages text-secondary" v-if="messages.length == 0">
@@ -9,7 +10,7 @@
                 </p>
                 <div class="messages" v-chat-scroll="{always: false, smooth: true}">
                     <div v-for="message in messages" :key="message.id">
-                        <span class="text-info">[{{ message.name }}]: </span>
+                        <a v-bind:href = "message.explorerAddress"><span class="text-info">[{{ message.name }}]: </span></a>
                         <span>{{message.message}}</span>
                         <span class="text-secondary time">{{message.timestamp}}</span>
                     </div>
@@ -72,9 +73,9 @@
             }
         },
         created() {
-            this.messages.push({
-              id:2,name:"sherman",message:"Hello World2",timestamp:"456"
-            })
+          // setInterval(function(){ 
+          //   console.log("hello")
+          // }, 5000);
         },
         methods: {
           async update() {
@@ -91,6 +92,8 @@
                 }
                 var message = {
                   id: i,
+                  explorerAddress: `https://nd-898-212-753.p2pify.com/accounts/${result[0][i]}/transactions`,
+                  transactionHash: `HAHA`,
                   name:this.readableName[result[0][i]],
                   message:stringArray[i],
                   timestamp:result[2][i].toString()

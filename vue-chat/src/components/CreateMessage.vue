@@ -81,8 +81,8 @@
 							data:encodedCall
 						},this.localPrivateKey)
 						const rawTx = info.rawTransaction;
-						this.web3.eth.sendSignedTransaction(rawTx).on('receipt',console.log)
-						
+						await this.web3.eth.sendSignedTransaction(rawTx)
+						this.newMessage=''
 						//for use with node accounts
 						// const web3 = new Web3(window.web3.currentProvider);
 						// const convertedMessage = await this.stringToBytes32(web3,this.newMessage)
