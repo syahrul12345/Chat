@@ -32,9 +32,9 @@
 		async created() {
 			//creates a local account for the sender
 			//ROPSTEN
-			this.web3 = new Web3('https://nd-987-442-424.p2pify.com')
+			//this.web3 = new Web3('https://nd-987-442-424.p2pify.com')
 			// //QUORUM
-			//this.web3 = new Web3(window.web3.currentProvider);
+			this.web3 = new Web3(window.web3.currentProvider);
 			const l = this.web3.eth.accounts.create('123');
 			this.localAccount = l.address
 			this.localPrivateKey = l.privateKey

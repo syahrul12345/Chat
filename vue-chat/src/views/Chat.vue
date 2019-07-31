@@ -79,7 +79,7 @@
         methods: {
           async update() {
             const web3 = new Web3(window.web3.currentProvider);
-            const chatContract = await web3.eth.Contract(abi, address)
+            const chatContract = await new web3.eth.Contract(abi, address)
             chatContract.methods.getLatest().call({}).then((result) => {
               this.messages = [];
               const randomAnimals = this.randomize(result)
