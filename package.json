@@ -13,5 +13,9 @@
     "Ethereum"
   ],
   "author": "Syahrul Nizam @ Chainstack",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "^2.2.0",
+    "vue-beautiful-chat": "^2.2.2"
+  }
 }

@@ -30,24 +30,49 @@ contract Chat {
 	uint256 private Count;
 	uint256 private Display;
 	
+	event Received(
+		bytes32 _text,
+		address _add,
+		uint256 timestamp
+
+	);
+
 	constructor() public {
 		Deployer = msg.sender;
 		Count = 0;
 	}
 	function answer(bytes32 _text) external returns(bool success) {
-		count++;
-		bytes32 id = keccak256(_text,count);
-		TextMapping[id].text = text;
+		Count++;
+		bytes32 id = keccak256(abi.encodePacked(_text,Count));
+		TextKeys.push(id);
+		TextMapping[id].text = _text;
 		TextMapping[id].add = msg.sender;
 		TextMapping[id].timestamp = block.timestamp;
-
+		emit Received(_text,msg.sender,block.timestamp);
+    
 	}
+
+	function getAnswer() external view returns (bytes32[] memory) {
+		return TextKeys;
+	}
+
 	function setDisplay(uint256 _display) external returns (bool success) {
 		Display = _display;
 	}
 
-	function getDisplay() external returns (address,bytes32) {
-		address[] memory = new address[]()
+	function getLatest() external view returns (address[] memory ,bytes32[] memory,uint256[] memory) {
+		address[] memory returnAddress = new address[](Display);
+		bytes32[] memory text = new bytes32[](Display);
+		uint256[] memory time = new uint256[](Display);
+
+		uint j = 0;
+		for(uint i = TextKeys.length - Display;i<TextKeys.length;i++) {
+			returnAddress[j] = TextMapping[TextKeys[i]].add;
+			text[j] = TextMapping[TextKeys[i]].text;
+			time[j] = TextMapping[TextKeys[i]].timestamp;
+			j++;
+		} 
+		return(returnAddress,text,time);	
 
 	}
 
