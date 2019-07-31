@@ -32,9 +32,9 @@
 		async created() {
 			//creates a local account for the sender
 			//ROPSTEN
-			//this.web3 = new Web3('https://nd-987-442-424.p2pify.com')
+			this.web3 = new Web3('https://nd-987-442-424.p2pify.com')
 			// //QUORUM
-			this.web3 = new Web3(window.web3.currentProvider);
+			//this.web3 = new Web3(window.web3.currentProvider);
 			const l = this.web3.eth.accounts.create('123');
 			this.localAccount = l.address
 			this.localPrivateKey = l.privateKey
@@ -57,8 +57,6 @@
 					if(typeof window.web3 !== 'undefined'){
 						// create account in the remote node
 						// const newAccount = await web3.eth.personal.newAccount('password')
-						console.log(this.signer)
-						console.log(this.web3.eth.accounts.privateKeyToAccount(this.localPrivateKey))
 						//for use with metamask accounts
 						// const web3 = new Web3(window.web3.currentProvider);
 						// const accounts = await web3.eth.getAccounts()
@@ -71,17 +69,19 @@
 
 						
 						//signing with local accounts
-						
+						console.log(this.localAccount)
 						const web3 = this.web3
 						const convertedMessage = await this.stringToBytes32(web3,this.newMessage)
-						const chatContract = await web3.eth.Contract(abi,address)
+						const chatContract = await new web3.eth.Contract(abi,address)
 						const encodedCall = chatContract.methods.answer(convertedMessage).encodeABI()
-						this.web3.eth.accounts.signTransaction({
+						const info = await this.web3.eth.accounts.signTransaction({
 							to:address,
-							gas:4500000000,
+							gas:450000,
 							gasPrice:0,
 							data:encodedCall
-						},this.localPrivateKey).then(console.log)
+						},this.localPrivateKey)
+						const rawTx = info.rawTransaction;
+						this.web3.eth.sendSignedTransaction(rawTx).on('receipt',console.log)
 						
 						//for use with node accounts
 						// const web3 = new Web3(window.web3.currentProvider);
