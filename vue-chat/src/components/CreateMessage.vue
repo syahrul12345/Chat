@@ -27,6 +27,7 @@
 					localPassword:null,
 					web3:null,
 					signer:null,
+					animal:null,
 				}
 			},
 		async created() {
@@ -40,7 +41,7 @@
 			this.localPrivateKey = l.privateKey
 			this.signer = l.signTransaction
 			console.log("Created a local account")
-
+			this.animal = 'doggo'
 			//create a new account in the node
 			//const web3 = new Web3(window.web3.currentProvider);
 			// console.log("HERE")
@@ -63,12 +64,12 @@
 						// 	from:  metamaskAccount
 						// })
 
-
 						// signing with local accounts
 						const web3 = this.web3
 						//const convertedMessage = await this.stringToBytes32(web3,this.newMessage)
 						const chatContract = await new web3.eth.Contract(abi,address)
-						const encodedCall = chatContract.methods.answer(this.newMessage).encodeABI()
+						console.log(this.animal)
+						const encodedCall = chatContract.methods.answer(this.animal,this.newMessage).encodeABI()
 						const info = await this.web3.eth.accounts.signTransaction({
 							to:address,
 							gas:450000,
@@ -76,7 +77,10 @@
 							data:encodedCall
 						},this.localPrivateKey)
 						const rawTx = info.rawTransaction;
-						await this.web3.eth.sendSignedTransaction(rawTx)
+						this.web3.eth.sendSignedTransaction(rawTx)
+						.on('receipt',(receipt) => {
+							console.log(receipt)
+						})
 						this.newMessage=''
 
 						//for use with node accounts <- doesnt work with chainstick since we dont have access to the .personal namespace

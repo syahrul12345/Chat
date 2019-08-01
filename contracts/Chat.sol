@@ -25,10 +25,11 @@ contract Chat {
 
 	mapping(address => bool) Owners;
 	mapping(bytes32 => Text) TextMapping;
+	mapping(address => bytes32) AddressToName;
 	bytes32[] TextKeys;
 	address private Deployer;
 	uint256 private Count;
-	uint256 private Display;
+	uint256 private Display = 2000000;
 	
 	event Received(
 		bytes32 _text,
@@ -41,11 +42,14 @@ contract Chat {
 		Deployer = msg.sender;
 		Count = 0;
 	}
-	function answer(string calldata text) external returns(bool success) {
+	function answer(string calldata name,string calldata text) external returns(bool success) {
 		Count++;
 		bytes32 _text = stringToBytes32(text);
+		bytes32 _name = stringToBytes32(name);
 		bytes32 id = keccak256(abi.encodePacked(_text,Count));
+
 		TextKeys.push(id);
+		AddressToName[msg.sender] = _name;
 		TextMapping[id].text = _text;
 		TextMapping[id].add = msg.sender;
 		TextMapping[id].timestamp = block.timestamp;
@@ -61,25 +65,27 @@ contract Chat {
 		Display = _display;
 	}
 
-	function getLatest() external view returns (address[] memory ,bytes32[] memory,uint256[] memory) {
+	function getLatest() external view returns (bytes32[] memory,address[] memory ,bytes32[] memory,uint256[] memory) {
 		uint256 tempDisplay;
 		if(TextKeys.length < Display) {
 			tempDisplay = TextKeys.length;
 		}else {
 			tempDisplay = Display;
 		}
+		bytes32[] memory returnNames = new bytes32[](tempDisplay);
 		address[] memory returnAddress = new address[](tempDisplay);
 		bytes32[] memory text = new bytes32[](tempDisplay);
 		uint256[] memory time = new uint256[](tempDisplay);
 
 		uint j = 0;
 		for(uint i = TextKeys.length - tempDisplay;i<TextKeys.length;i++) {
+			returnNames[j] = AddressToName[TextMapping[TextKeys[i]].add];
 			returnAddress[j] = TextMapping[TextKeys[i]].add;
 			text[j] = TextMapping[TextKeys[i]].text;
 			time[j] = TextMapping[TextKeys[i]].timestamp;
 			j++;
 		} 
-		return(returnAddress,text,time);	
+		return(returnNames,returnAddress,text,time);	
 
 	}
 	function stringToBytes32(string memory source) internal returns (bytes32 result) {
