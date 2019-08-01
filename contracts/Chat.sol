@@ -41,8 +41,9 @@ contract Chat {
 		Deployer = msg.sender;
 		Count = 0;
 	}
-	function answer(bytes32 _text) external returns(bool success) {
+	function answer(string calldata text) external returns(bool success) {
 		Count++;
+		bytes32 _text = stringToBytes32(text);
 		bytes32 id = keccak256(abi.encodePacked(_text,Count));
 		TextKeys.push(id);
 		TextMapping[id].text = _text;
@@ -61,12 +62,18 @@ contract Chat {
 	}
 
 	function getLatest() external view returns (address[] memory ,bytes32[] memory,uint256[] memory) {
-		address[] memory returnAddress = new address[](Display);
-		bytes32[] memory text = new bytes32[](Display);
-		uint256[] memory time = new uint256[](Display);
+		uint256 tempDisplay;
+		if(TextKeys.length < Display) {
+			tempDisplay = TextKeys.length;
+		}else {
+			tempDisplay = Display;
+		}
+		address[] memory returnAddress = new address[](tempDisplay);
+		bytes32[] memory text = new bytes32[](tempDisplay);
+		uint256[] memory time = new uint256[](tempDisplay);
 
 		uint j = 0;
-		for(uint i = TextKeys.length - Display;i<TextKeys.length;i++) {
+		for(uint i = TextKeys.length - tempDisplay;i<TextKeys.length;i++) {
 			returnAddress[j] = TextMapping[TextKeys[i]].add;
 			text[j] = TextMapping[TextKeys[i]].text;
 			time[j] = TextMapping[TextKeys[i]].timestamp;
@@ -75,5 +82,32 @@ contract Chat {
 		return(returnAddress,text,time);	
 
 	}
+	function stringToBytes32(string memory source) internal returns (bytes32 result) {
+	    bytes memory tempEmptyStringTest = bytes(source);
+	    if (tempEmptyStringTest.length == 0) {
+	        return 0x0;
+	    }
+
+	    assembly {
+	        result := mload(add(source, 32))
+	    }
+	}
+	function bytes32ToString(bytes32 x) view internal returns (string memory) {
+	    bytes memory bytesString = new bytes(32);
+	    uint charCount = 0;
+	    for (uint j = 0; j < 32; j++) {
+	        byte char = byte(bytes32(uint(x) * 2 ** (8 * j)));
+	        if (char != 0) {
+	            bytesString[charCount] = char;
+	            charCount++;
+	        }
+	    }
+	    bytes memory bytesStringTrimmed = new bytes(charCount);
+	    for (uint j = 0; j < charCount; j++) {
+	        bytesStringTrimmed[j] = bytesString[j];
+	    }
+	    return string(bytesStringTrimmed);
+	}
+
 
 }

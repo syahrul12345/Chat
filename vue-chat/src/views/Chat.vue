@@ -1,7 +1,8 @@
 <template>
     <div class="chat container">
         <h2 class="text-primary text-center">Chainstack Super Secret Chat</h2>
-        <h5 class="text-secondary text-center">Powered by Quorum</h5>
+        <h5 class="text-secondary text-center">Powered by Quorum  </h5>
+        <h5 class="text-secondary text-center">Please set metamask RPC endpoint to : http://nd-487-578-981.rg-837-380.p2pify.com:8545</h5>
 
         <div class="card">
             <div class="card-body">
@@ -19,7 +20,7 @@
             <div class="card-action">
                 <CreateMessage :name="name"/>
             </div>
-            <button class="btn btn-primary" type="submit" name="action" @click="update">Random</button>
+            <!-- <button class="btn btn-primary" type="submit" name="action" @click="update">Random</button> -->
         </div>
     </div>
 </template>
@@ -70,18 +71,23 @@
                 //messages: [{id:1,name:"syahrul",message:"HELLO WORLD",timestamp:"1234567"}]
                 messages: [],
                 readableName: {},
+                web3:null,
+                chatContract:null,
             }
         },
         created() {
-          // setInterval(function(){ 
-          //   console.log("hello")
-          // }, 5000);
+          this.web3 = new Web3(window.web3.currentProvider);
+          this.chatContract = new this.web3.eth.Contract(abi, address)
+          this.update();
+          setInterval(function() {
+            this.update()
+          }.bind(this),200)
+
         },
+        
         methods: {
           async update() {
-            const web3 = new Web3(window.web3.currentProvider);
-            const chatContract = await new web3.eth.Contract(abi, address)
-            chatContract.methods.getLatest().call({}).then((result) => {
+            this.chatContract.methods.getLatest().call({}).then((result) => {
               this.messages = [];
               const randomAnimals = this.randomize(result)
               const stringArray = this.bytesToString(result)
@@ -123,6 +129,7 @@
           }
 
         }
+        
     }
 
 </script>

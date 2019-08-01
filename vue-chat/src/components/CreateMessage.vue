@@ -55,25 +55,20 @@
 			async createMessage () {
 				if (this.newMessage) {
 					if(typeof window.web3 !== 'undefined'){
-						// create account in the remote node
-						// const newAccount = await web3.eth.personal.newAccount('password')
-						//for use with metamask accounts
-						// const web3 = new Web3(window.web3.currentProvider);
-						// const accounts = await web3.eth.getAccounts()
+						//just to set up display
+						// const accounts = await this.web3.eth.getAccounts()
 						// const metamaskAccount = accounts[0];
-						// const chatContract = await web3.eth.Contract(abi,address)
-						// const convertedMessage = await this.stringToBytes32(web3,this.newMessage)
-						// chatContract.methods.answer(convertedMessage).send({
+						// const chatContract = await new this.web3.eth.Contract(abi,address)
+						// chatContract.methods.setDisplay('200').send({
 						// 	from:  metamaskAccount
 						// })
 
-						
-						//signing with local accounts
-						console.log(this.localAccount)
+
+						// signing with local accounts
 						const web3 = this.web3
-						const convertedMessage = await this.stringToBytes32(web3,this.newMessage)
+						//const convertedMessage = await this.stringToBytes32(web3,this.newMessage)
 						const chatContract = await new web3.eth.Contract(abi,address)
-						const encodedCall = chatContract.methods.answer(convertedMessage).encodeABI()
+						const encodedCall = chatContract.methods.answer(this.newMessage).encodeABI()
 						const info = await this.web3.eth.accounts.signTransaction({
 							to:address,
 							gas:450000,
@@ -83,7 +78,8 @@
 						const rawTx = info.rawTransaction;
 						await this.web3.eth.sendSignedTransaction(rawTx)
 						this.newMessage=''
-						//for use with node accounts
+
+						//for use with node accounts <- doesnt work with chainstick since we dont have access to the .personal namespace
 						// const web3 = new Web3(window.web3.currentProvider);
 						// const convertedMessage = await this.stringToBytes32(web3,this.newMessage)
 						// const chatContract = await web3.eth.Contract(abi,address)
