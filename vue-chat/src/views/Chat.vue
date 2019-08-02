@@ -81,7 +81,7 @@
           this.update();
           setInterval(function() {
             this.update()
-          }.bind(this),200)
+          }.bind(this),20000)
 
         },
         
@@ -89,20 +89,15 @@
           async update() {
             this.chatContract.methods.getLatest().call({}).then((result) => {
               this.messages = [];
-              const randomAnimals = this.randomize(result)
-              const stringArray = this.bytesToString(result)
+              const {animalArray, stringArray} = this.bytesToString(result)
               for(var i=0;i<result[0].length;i++) {
-                if(!this.readableName[result[0][i]]){
-                  console.log('dont exist')
-                  this.readableName[result[0][i]] = randomAnimals[result[0][i]]
-                }
                 var message = {
                   id: i,
-                  explorerAddress: `https://nd-898-212-753.p2pify.com/accounts/${result[0][i]}/transactions`,
-                  transactionHash: `HAHA`,
-                  name:this.readableName[result[0][i]],
+                  explorerAddress: `https://nd-898-212-753.p2pify.com/accounts/${result[1][i]}/transactions`,
+                  transactionHash: `Impossible to get transaction hash`,
+                  name:animalArray[i],
                   message:stringArray[i],
-                  timestamp:result[2][i].toString()
+                  timestamp:result[3][i].toString()
                 }
                 this.messages.push(message)
               }
@@ -121,11 +116,17 @@
           },
           bytesToString(result) {
             const web3 = new Web3();
+            //populate the human readable IDS
+            const animalArray = []
+            result[0].forEach((item) => {
+              animalArray.push(web3.utils.toAscii(item))
+            })
+            //populate the string arrays
             const stringArray = []
-            result[1].forEach(async(item) => {
+            result[2].forEach((item) => {
               stringArray.push(web3.utils.toAscii(item))
             })
-            return stringArray
+            return {animalArray, stringArray}
           }
 
         }
