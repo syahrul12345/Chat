@@ -1,6 +1,6 @@
 pragma solidity 0.5.0;
 
-contract Chat {
+contract ChatTest {
 	/**
 	@notice Main Chat
 	@dev This contract keeps track of all chats and should output the latest chat
@@ -69,15 +69,19 @@ contract Chat {
 	function getDisplay() external view returns(uint256) {
 		return PersonalDisplay[msg.sender];
 	}
+	function returnEmpty(address _caller) external view returns(uint256) {
+		return PersonalDisplay[_caller];
+	}
 
-	function getLatest() external view returns (bytes32[] memory,address[] memory ,bytes32[] memory,uint256[] memory) {
+
+	function getLatest(address _caller) external view returns (bytes32[] memory,address[] memory ,bytes32[] memory,uint256[] memory) {
 		uint256 tempDisplay;
-		if(PersonalDisplay[msg.sender] == 0) {
-			tempDisplay = TextKeys.length;
-		}else if(TextKeys.length < PersonalDisplay[msg.sender]) {
+		if(PersonalDisplay[_caller] == 0) {
+			tempDisplay = 200000;
+		}else if(TextKeys.length < PersonalDisplay[_caller]) {
 			tempDisplay = TextKeys.length;
 		}else {
-			tempDisplay = PersonalDisplay[msg.sender];
+			tempDisplay = PersonalDisplay[_caller];
 		}
 		bytes32[] memory returnNames = new bytes32[](tempDisplay);
 		address[] memory returnAddress = new address[](tempDisplay);
