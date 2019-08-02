@@ -5,7 +5,18 @@
                 <input type="text" name="message" class="form-control" placeholder="Enter message ..." v-model="newMessage">
                 <p class="text-danger" v-if="errorText">{{ errorText }}</p>
             </div>
-            <button class="btn btn-primary" type="submit" name="action" @enter="createMessage">Submit</button>
+            
+            <div class="row">
+            	<div class = "col-sm">
+            	  <input type="text" name="message" class="form-control" placeholder="Register your user ID" v-model="animal">
+            	  
+                </div>
+                <div class = "col-sm">
+                	<button class="btn btn-primary" type="submit" name="action" @enter="createMessage">Submit</button>
+                	<p class="text-danger" v-if="noIdError">{{ noIdError }}</p>
+                </div>
+             </div>
+
         </form>
     </div>
 </template>c,
@@ -22,6 +33,7 @@
 				return {
 					newMessage: null,
 					errorText: null,
+					noIdError:null,
 					localAccount: null,
 					localPrivateKey:null,
 					localPassword:null,
@@ -41,7 +53,6 @@
 			this.localPrivateKey = l.privateKey
 			this.signer = l.signTransaction
 			console.log("Created a local account")
-			this.animal = 'doggo'
 			//create a new account in the node
 			//const web3 = new Web3(window.web3.currentProvider);
 			// console.log("HERE")
@@ -56,7 +67,8 @@
 			async createMessage () {
 				if (this.newMessage) {
 					if(typeof window.web3 !== 'undefined'){
-						//just to set up display
+						if(this.animal !== null) {
+							//just to set up display
 						// const accounts = await this.web3.eth.getAccounts()
 						// const metamaskAccount = accounts[0];
 						// const chatContract = await new this.web3.eth.Contract(abi,address)
@@ -95,7 +107,10 @@
 						//     to: address,
 						//     data: encodedCall
 						// }, this.localPassword).then(console.log);
-
+						}
+						else {
+							this.noIdError = "Please put in your ID :("
+						}
 					}else {
 						window.alert("NO METAMASK :(")
 					}

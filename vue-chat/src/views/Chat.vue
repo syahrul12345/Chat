@@ -69,6 +69,8 @@
         data() {
             return{
                 //messages: [{id:1,name:"syahrul",message:"HELLO WORLD",timestamp:"1234567"}]
+                userId:null,
+                preId:null,
                 messages: [],
                 readableName: {},
                 web3:null,
@@ -81,7 +83,7 @@
           this.update();
           setInterval(function() {
             this.update()
-          }.bind(this),20000)
+          }.bind(this),100)
 
         },
         
